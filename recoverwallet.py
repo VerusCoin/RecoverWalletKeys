@@ -20,7 +20,8 @@
 import re
 import hashlib
 import base58
-from pycoin.ecdsa import generator_secp256k1, public_pair_for_secret_exponent
+from pycoin.ecdsa import generator_secp256k1
+from pycoin.ecdsa import public_pair_for_secret_exponent
 
 def from_long(v, prefix, base, charset):
     """The inverse of to_long. Convert an integer to an arbitrary base.
@@ -64,7 +65,7 @@ privKeys=set(privKeys_re_c.findall(wallet))
 
 print("#Found %d privKeys" % len(privKeys))
 
-for key in privKeys:
+for key, i in zip(privKeys, range(len(privKeys))):
 
     public_x, public_y = public_pair_for_secret_exponent(generator_secp256k1, int(bytetohex(key), 16))
 
@@ -110,6 +111,6 @@ for key in privKeys:
     #print("Private Key Hexadecimal Format (64 characters [0-9A-F]):", bytetohex(key))
     #print("Private Key WIF (51 Base58 characters):", base58.b58encode(addr))
     #print("Private Key WIF Compressed (52 Base58 characters):", base58.b58encode(addr_c),"\n")
-    print("fiat/verus importprivkey", base58.b58encode(addr_c).decode("utf-8"), '"" false')
+    print("verus importprivkey", base58.b58encode(addr_c).decode("utf-8"), '"" false' if (i + 1) < len(privKeys) else '"" true')
 
 walletHandle.close()
