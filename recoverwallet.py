@@ -20,8 +20,9 @@
 import re
 import hashlib
 import base58
-from pycoin.ecdsa import generator_secp256k1
-from pycoin.ecdsa import public_pair_for_secret_exponent
+from pycoin.ecdsa.secp256k1 import secp256k1_generator
+from pycoin.encoding.exceptions import EncodingError
+
 
 def from_long(v, prefix, base, charset):
     """The inverse of to_long. Convert an integer to an arbitrary base.
@@ -67,7 +68,7 @@ print("#Found %d privKeys" % len(privKeys))
 
 for key, i in zip(privKeys, range(len(privKeys))):
 
-    public_x, public_y = public_pair_for_secret_exponent(generator_secp256k1, int(bytetohex(key), 16))
+    public_x, public_y = secp256k1_generator * int(bytetohex(key), 16)
 
     public_key = b'\4' + to_bytes_32(public_x) + to_bytes_32(public_y)
     compressed_public_key = bytes.fromhex("%02x%064x" % (2 + (public_y & 1), public_x))
